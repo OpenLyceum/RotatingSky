@@ -1,6 +1,6 @@
 # CLAUDE.md — Rotating Sky
 
-Sim-specific context for AI assistants. General SceneryStack guidance: [OpenPhysics/.github/CLAUDE.md](https://github.com/OpenPhysics/.github/blob/main/CLAUDE.md).
+Sim-specific context for AI assistants. General SceneryStack guidance: [OpenLyceum/.github/CLAUDE.md](https://github.com/OpenLyceum/.github/blob/main/CLAUDE.md).
 
 ## Project
 
@@ -46,7 +46,7 @@ Three **independent** screen models — each constructs its own `SkyModel` seede
 
 ## Accessibility
 
-Follows the shared [OpenPhysics accessibility convention](https://github.com/OpenPhysics/Baton/blob/main/ACCESSIBILITY.md).
+Follows the shared [OpenLyceum accessibility convention](https://github.com/OpenLyceum/Baton/blob/main/ACCESSIBILITY.md).
 Each screen registers `*ScreenSummaryContent` and `*KeyboardHelpContent`, with explicit `pdomOrder`. A11y strings live under `a11y.horizonSystem`, `a11y.celestialSphere`, and `a11y.explorer` in each locale JSON, via `StringManager.getHorizonSystemA11yStrings()` / `getCelestialSphereA11yStrings()` / `getExplorerA11yStrings()`. Keep `currentDetailsContent` live; every interactive node needs an `accessibleName`.
 
 ## Testing
