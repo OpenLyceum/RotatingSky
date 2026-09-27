@@ -8,7 +8,7 @@ Vite 8, TypeScript 7, and Biome 2.
 
 ## Features
 
-- Three screens (see `doc/multi-screen.md` for the architecture):
+- Three screens:
   1. **Horizon System** (`src/horizon-system/`) — the local sky from an observer's horizon.
   2. **Celestial Sphere** (`src/celestial-sphere/`) — the celestial sphere, its equator, ecliptic, and poles.
   3. **Explorer** (`src/explorer/`) — the combined, interactive rotating-sky explorer.
@@ -20,7 +20,7 @@ Vite 8, TypeScript 7, and Biome 2.
 - Git hooks for Biome pre-commit checks
 - Shared GitHub Actions CI via `OpenLyceum/Baton`
 
-See `doc/multi-screen.md` for the multi-screen architecture and how to share state across screens.
+Multi-screen conventions (per-screen folders, shared state): [SceneryStackTemplate `doc/multi-screen.md`](https://github.com/OpenLyceum/SceneryStackTemplate/blob/main/doc/multi-screen.md).
 
 ### NAAP reference sources
 
