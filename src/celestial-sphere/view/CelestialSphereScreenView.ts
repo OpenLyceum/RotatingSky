@@ -17,7 +17,7 @@ import {
 } from "scenerystack/axon";
 import { clamp, Dimension2, Range, toFixed, Vector2 } from "scenerystack/dot";
 import { optionize } from "scenerystack/phet-core";
-import { HBox, Rectangle, Text, VBox } from "scenerystack/scenery";
+import { HBox, Rectangle, RichText, Text, VBox } from "scenerystack/scenery";
 import { NumberControl, PhetFont, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
 import type { ScreenViewOptions } from "scenerystack/sim";
 import { ScreenView } from "scenerystack/sim";
@@ -82,6 +82,8 @@ const DEC_RANGE = new Range(-90, 90);
 /** Show the pole-altitude arc once the morph is mostly toward the horizon. */
 const POLE_ALTITUDE_BLEND_THRESHOLD = 0.35;
 const PROMPT_TEXT_MAX_WIDTH = 200;
+/** Minimum vertical gap between the control column and Reset All. */
+const PANEL_COLUMN_RESET_GAP = 8;
 const LAB_TOOLS_EXPAND_BUTTON_SIDE = 18;
 
 /** Fill the play area left of the right-hand control panels with the celestial sphere. */
@@ -219,10 +221,11 @@ export class CelestialSphereScreenView extends ScreenView {
         return prompt ?? "";
       },
     );
-    const promptText = new Text(activePromptStringProperty, {
+    // Wrapped, not maxWidth-scaled: the one-line prompts shrank to ~5 px text.
+    const promptText = new RichText(activePromptStringProperty, {
       font: new PhetFont(CONTROL_FONT_SIZE),
       fill: textFill,
-      maxWidth: PROMPT_TEXT_MAX_WIDTH,
+      lineWrap: PROMPT_TEXT_MAX_WIDTH,
     });
     const promptIndexLabel = new Text(
       new DerivedProperty([model.guidedPromptIndexProperty], (index) => `${index + 1} / ${GUIDED_PROMPT_COUNT}`),
@@ -288,7 +291,7 @@ export class CelestialSphereScreenView extends ScreenView {
     ): Checkbox =>
       new Checkbox(
         property,
-        new Text(labelProperty, { font: new PhetFont(CONTROL_FONT_SIZE), fill: textFill, maxWidth: 140 }),
+        new RichText(labelProperty, { font: new PhetFont(CONTROL_FONT_SIZE), fill: textFill, lineWrap: 140 }),
         {
           ...ROTATING_SKY_CHECKBOX_OPTIONS,
           accessibleName: labelProperty,
@@ -554,6 +557,13 @@ export class CelestialSphereScreenView extends ScreenView {
       },
       right: this.layoutBounds.maxX - SCREEN_VIEW_MARGIN,
       bottom: this.layoutBounds.maxY - RESET_ALL_BUTTON_BOTTOM_MARGIN,
+    });
+
+    // Expanding "Lab tools" made the column run into Reset All; cap its height
+    // (scales down slightly when expanded) and keep it right-aligned as it resizes.
+    panelColumn.maxHeight = resetAllButton.top - PANEL_COLUMN_RESET_GAP - panelColumn.top;
+    panelColumn.localBoundsProperty.link(() => {
+      panelColumn.right = this.layoutBounds.maxX - SCREEN_VIEW_MARGIN;
     });
     this.addChild(resetAllButton);
 
