@@ -11,7 +11,7 @@
  * 2. If it should also be user-editable at runtime, surface it as a preference
  *    in RotatingSkyPreferencesModel (initialize that Property from this query parameter).
  *
- * Usage: append e.g. `?exampleToggle=true` to the sim URL.
+ * Usage: append e.g. `?latitude=45&longitude=-73.6` to the sim URL.
  */
 
 import { logGlobal } from "scenerystack/phet-core";

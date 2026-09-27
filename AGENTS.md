@@ -90,6 +90,8 @@ npm run lint && npm run check && npm run build && npm test
 
 ## Compliance carve-outs
 
+- `data/`: Natural Earth land GeoJSON (public domain) read by `npm run earth-shore` (`scripts/generate-earth-shore-data.ts`) to regenerate `EarthShoreData.ts`.
+
 ### `package.json` overrides
 
 JSON cannot carry comments, so the rationale for forced transitive pins lives here. Prefer
