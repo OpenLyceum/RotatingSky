@@ -17,6 +17,7 @@ import { type Bounds2, clamp, Vector2 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
 import { Node, Path, Rectangle, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 import RotatingSkyColors from "../../RotatingSkyColors.js";
 import { CONTROL_FONT_SIZE, STAR_RADIUS } from "../../RotatingSkyConstants.js";
 import type { SkyModel } from "../model/SkyModel.js";
@@ -113,7 +114,7 @@ export class FirstPersonSkyViewNode extends Node {
       fill: RotatingSkyColors.accentColorProperty,
       pickable: false,
     });
-    const poleLabel = new Text("NCP", {
+    const poleLabel = new Text(StringManager.getInstance().getControls().northCelestialPoleAbbreviationStringProperty, {
       font: new PhetFont({ size: 11, weight: "bold" }),
       fill: RotatingSkyColors.accentColorProperty,
       pickable: false,

@@ -16,6 +16,7 @@ import { Vector3 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
 import { Circle, Node, Path, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 import RotatingSkyColors from "../../RotatingSkyColors.js";
 import { raDecToVector3 } from "../SkyCoordinates.js";
 import type { SkyProjection } from "../SkyProjection.js";
@@ -92,10 +93,11 @@ export class CelestialSphereNode extends Node {
     const poleDot = (): Circle => new Circle(POLE_DOT_RADIUS, { fill: RotatingSkyColors.cardinalLabelColorProperty });
     const ncpDot = poleDot();
     const scpDot = poleDot();
-    const poleLabel = (label: string): Text =>
+    const controls = StringManager.getInstance().getControls();
+    const poleLabel = (label: TReadOnlyProperty<string>): Text =>
       new Text(label, { font: new PhetFont(12), fill: RotatingSkyColors.cardinalLabelColorProperty });
-    const ncpText = poleLabel("NCP");
-    const scpText = poleLabel("SCP");
+    const ncpText = poleLabel(controls.northCelestialPoleAbbreviationStringProperty);
+    const scpText = poleLabel(controls.southCelestialPoleAbbreviationStringProperty);
 
     const celestialEquatorBackLayer = new Node({ children: [equatorBack] });
     const celestialEquatorFrontLayer = new Node({ children: [equatorFront] });
