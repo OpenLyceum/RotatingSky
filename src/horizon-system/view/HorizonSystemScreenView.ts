@@ -10,7 +10,7 @@
 import { DerivedProperty } from "scenerystack/axon";
 import { Bounds2, clamp, Vector2 } from "scenerystack/dot";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
-import { Node, Rectangle, Text, VBox } from "scenerystack/scenery";
+import { HBox, Node, Rectangle, Text, VBox } from "scenerystack/scenery";
 import { NumberControl, PhetFont, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { Checkbox, RectangularPushButton, VerticalAquaRadioButtonGroup } from "scenerystack/sun";
@@ -34,7 +34,7 @@ import {
   normalizeDegrees,
   radToDeg,
 } from "../../common/SkyCoordinates.js";
-import { SkyProjection } from "../../common/SkyProjection.js";
+import { HORIZON_FRAME_MATRIX, SkyProjection } from "../../common/SkyProjection.js";
 import { attachSkyCameraInteraction } from "../../common/view/attachSkyCameraInteraction.js";
 import { CelestialEquatorOnHorizonNode } from "../../common/view/CelestialEquatorOnHorizonNode.js";
 import { CelestialPoleAxisNode } from "../../common/view/CelestialPoleAxisNode.js";
@@ -124,6 +124,11 @@ const projectionInBounds = (bounds: Bounds2): { center: Vector2; radius: number 
 };
 
 export type HorizonSystemScreenViewOptions = ScreenViewOptions;
+
+/** Horizontal gap between the paired radio-group columns in the control panel. */
+const PANEL_COLUMN_SPACING = 24;
+/** Horizontal gap between controls that share a row in the control panel. */
+const PANEL_ROW_SPACING = 10;
 
 export class HorizonSystemScreenView extends ScreenView {
   private readonly projection: SkyProjection;
@@ -294,18 +299,30 @@ export class HorizonSystemScreenView extends ScreenView {
       new VBox({
         align: "left",
         spacing: PANEL_CONTENT_SPACING,
+        // Related controls share rows so the panel fits the 618 px layout
+        // (as a single column it ran ~65 px under the nav bar and Reset All).
         children: [
           latitudeControl,
-          sectionTitle(controls.viewModeStringProperty),
-          viewModeRadioGroup,
-          sectionTitle(controls.viewDirectionStringProperty),
-          viewDirectionRadioGroup,
+          new HBox({
+            spacing: PANEL_COLUMN_SPACING,
+            align: "top",
+            children: [
+              new VBox({
+                align: "left",
+                spacing: PANEL_CONTENT_SPACING,
+                children: [sectionTitle(controls.viewModeStringProperty), viewModeRadioGroup],
+              }),
+              new VBox({
+                align: "left",
+                spacing: PANEL_CONTENT_SPACING,
+                children: [sectionTitle(controls.viewDirectionStringProperty), viewDirectionRadioGroup],
+              }),
+            ],
+          }),
           snapDomeButton,
-          addStarButton,
+          new HBox({ spacing: PANEL_ROW_SPACING, children: [addStarButton, removeAllButton] }),
           timeControl,
-          resetTrailsButton,
-          trailsCheckbox,
-          removeAllButton,
+          new HBox({ spacing: PANEL_ROW_SPACING, children: [resetTrailsButton, trailsCheckbox] }),
           riseSetCheckbox,
           circumpolarCheckbox,
           neverRiseCheckbox,
@@ -330,6 +347,7 @@ export class HorizonSystemScreenView extends ScreenView {
       radius,
       elevation: DEFAULT_DOME_ELEVATION,
       azimuth: viewDirectionDomeAzimuth(model.viewDirectionProperty.value),
+      frameMatrix: HORIZON_FRAME_MATRIX,
     });
 
     const belowHorizonVisibleProperty = new DerivedProperty([sky.hideBelowHorizonProperty], (hide) => !hide);

@@ -93,7 +93,8 @@ These bands explain why Polaris stays up for mid-northern observers while southe
 ### Frames (conceptual)
 
 - **Equatorial frame**: +Z toward the north celestial pole; equator in the XY-plane; RA = 0 h along +X.
-- **Horizon frame**: +Z toward the zenith; +X north; +Y east.
+- **Horizon frame**: +Z toward the zenith; +X north; +Y east (left-handed; drawn through a Y reflection
+  so the horizon diagram is not a mirror image).
 - **Ecliptic**: fixed great circle on celestial-sphere views (obliquity ≈ 23.44°); not dynamically driven
   by date.
 

@@ -97,7 +97,11 @@
     "patternCassiopeia": "Cassiopeia",
     "patternSummerTriangle": "Summer Triangle",
     "patternOrion": "Orion",
-    "patternLittleDipper": "Little Dipper"
+    "patternLittleDipper": "Little Dipper",
+    "northAbbreviation": "N",
+    "eastAbbreviation": "E",
+    "southAbbreviation": "S",
+    "westAbbreviation": "W"
   },
   "a11y": {
     "horizonSystem": {

@@ -35,7 +35,19 @@ type SkyProjectionSelfOptions = {
   azimuth?: number;
   /** Initial camera tilt, radians (negative looks down onto the sphere). */
   elevation?: number;
+  /** Initial (and reset) reference-frame matrix; see {@link HORIZON_FRAME_MATRIX}. */
+  frameMatrix?: Matrix3;
 };
+
+/**
+ * Frame matrix for views that draw horizon-frame vectors. The horizon frame
+ * (+X north, +Y east, +Z zenith) is left-handed (north × east = down), so drawing
+ * it through the rotation-only camera rendered a mirror image: with the camera
+ * behind an observer facing east, north appeared on the right. Negating Y maps
+ * it onto the right-handed (north, west, zenith) frame. The matrix is orthogonal,
+ * so unproject()'s transpose-as-inverse still holds.
+ */
+export const HORIZON_FRAME_MATRIX = Matrix3.rowMajor(1, 0, 0, 0, -1, 0, 0, 0, 1);
 
 export type SkyProjectionOptions = SkyProjectionSelfOptions;
 
@@ -68,6 +80,7 @@ export class SkyProjection {
         radius: 150,
         azimuth: 0,
         elevation: 0,
+        frameMatrix: Matrix3.identity(),
       },
       providedOptions,
     );
@@ -76,7 +89,7 @@ export class SkyProjection {
     this.radius = options.radius;
     this.azimuthProperty = new NumberProperty(options.azimuth);
     this.elevationProperty = new NumberProperty(options.elevation);
-    this.frameMatrixProperty = new Property(Matrix3.identity());
+    this.frameMatrixProperty = new Property(options.frameMatrix);
 
     this.viewMatrixProperty = new DerivedProperty(
       [this.azimuthProperty, this.elevationProperty, this.frameMatrixProperty],

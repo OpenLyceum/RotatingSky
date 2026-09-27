@@ -19,8 +19,8 @@ describe("viewDirectionAzimuthDeg", () => {
 describe("viewDirectionDomeAzimuth", () => {
   it("puts the chosen cardinal toward the viewer on the orthographic dome", () => {
     expect(viewDirectionDomeAzimuth(ViewDirection.NORTH)).toBeCloseTo(Math.PI / 2);
-    expect(viewDirectionDomeAzimuth(ViewDirection.EAST)).toBeCloseTo(0);
+    expect(viewDirectionDomeAzimuth(ViewDirection.EAST)).toBeCloseTo(Math.PI);
     expect(viewDirectionDomeAzimuth(ViewDirection.SOUTH)).toBeCloseTo(-Math.PI / 2);
-    expect(viewDirectionDomeAzimuth(ViewDirection.WEST)).toBeCloseTo(Math.PI);
+    expect(viewDirectionDomeAzimuth(ViewDirection.WEST)).toBeCloseTo(0);
   });
 });

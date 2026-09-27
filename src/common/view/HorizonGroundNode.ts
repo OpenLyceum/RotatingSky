@@ -2,7 +2,8 @@
  * HorizonGroundNode.ts
  *
  * The observer's ground plane on the horizon dome: a filled green disk in the
- * horizontal plane with N/E/S/W labels printed on the grass. The stick figure
+ * horizontal plane with localized N/E/S/W labels on the grass. Labels stay
+ * upright (only foreshortened), so the far-side "W" never reads as an "M". The stick figure
  * at the sphere center lives in {@link HorizonObserverNode}, above the wireframe.
  *
  * World frame = horizon frame: +Z zenith, +X north, +Y east.
@@ -12,6 +13,7 @@ import { Multilink, type TReadOnlyProperty } from "scenerystack/axon";
 import { clamp, Vector3 } from "scenerystack/dot";
 import { Node, Path, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 import RotatingSkyColors from "../../RotatingSkyColors.js";
 import { degToRad } from "../SkyCoordinates.js";
 import type { SkyProjection } from "../SkyProjection.js";
@@ -21,7 +23,9 @@ const ZENITH = new Vector3(0, 0, 1);
 
 /** Where the cardinal labels sit on the flat ground disk, as a fraction of the rim radius (1 = on the horizon). */
 const GROUND_CARDINAL_RADIUS = 0.9;
-/** Azimuth step used to measure the local ground tangent for label rotation. */
+/** Smallest foreshortening scale for a cardinal label, so edge-on labels stay legible. */
+const MIN_LABEL_SCALE = 0.6;
+/** Azimuth step used to measure the local ground tangent for label foreshortening. */
 const GROUND_TANGENT_AZ_STEP_DEG = 6;
 
 export type HorizonGroundNodeOptions = {
@@ -39,16 +43,17 @@ export class HorizonGroundNode extends Node {
       lineWidth: 1,
     });
 
-    const cardinal = (label: string): Text =>
+    const controls = StringManager.getInstance().getControls();
+    const cardinal = (label: TReadOnlyProperty<string>): Text =>
       new Text(label, {
         font: new PhetFont({ size: 16, weight: "bold" }),
         fill: RotatingSkyColors.cardinalLabelColorProperty,
         pickable: false,
       });
-    const northText = cardinal("N");
-    const eastText = cardinal("E");
-    const southText = cardinal("S");
-    const westText = cardinal("W");
+    const northText = cardinal(controls.northAbbreviationStringProperty);
+    const eastText = cardinal(controls.eastAbbreviationStringProperty);
+    const southText = cardinal(controls.southAbbreviationStringProperty);
+    const westText = cardinal(controls.westAbbreviationStringProperty);
     const labels = new Node({ children: [northText, eastText, southText, westText], pickable: false });
 
     this.children = [groundFill, groundEdge, labels];
@@ -59,7 +64,7 @@ export class HorizonGroundNode extends Node {
       return new Vector3(radius * Math.cos(az), radius * Math.sin(az), 0);
     };
 
-    /** Lay a label flat on the ground disk, tangent to the horizon circle. */
+    /** Place an upright label on the ground disk, shrunk where the rim is foreshortened. */
     const placeLabel = (text: Text, azDeg: number): void => {
       const anchor = groundPoint(azDeg, GROUND_CARDINAL_RADIUS);
       const screen = projection.project(anchor);
@@ -71,11 +76,11 @@ export class HorizonGroundNode extends Node {
         return;
       }
 
-      // Baseline follows the local eastward rim direction; scale foreshortens edge-on labels.
+      // Rotating the baseline along the rim turned the far label upside down
+      // ("W" read as "M") and the side labels sideways; keep text upright.
       const referenceTangent =
         GROUND_CARDINAL_RADIUS * ((Math.PI / 180) * GROUND_TANGENT_AZ_STEP_DEG) * projection.radius;
-      text.rotation = Math.atan2(tangent.y, tangent.x);
-      text.setScaleMagnitude(clamp(tangent.magnitude / referenceTangent, 0.35, 1));
+      text.setScaleMagnitude(clamp(tangent.magnitude / referenceTangent, MIN_LABEL_SCALE, 1));
       text.center = screen;
       text.visible = true;
     };

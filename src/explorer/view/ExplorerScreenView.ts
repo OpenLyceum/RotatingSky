@@ -18,7 +18,7 @@
 import { DerivedProperty, Property, type TReadOnlyProperty } from "scenerystack/axon";
 import { clamp, Vector2 } from "scenerystack/dot";
 import { optionize } from "scenerystack/phet-core";
-import { HBox, Node, Rectangle, Text, VBox } from "scenerystack/scenery";
+import { HBox, Node, Rectangle, RichText, Text, VBox } from "scenerystack/scenery";
 import { NumberControl, PhetFont, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
 import type { ScreenViewOptions } from "scenerystack/sim";
 import { ScreenView } from "scenerystack/sim";
@@ -67,7 +67,7 @@ import {
   radiansToHours,
   radToDeg,
 } from "../../common/SkyCoordinates.js";
-import { SkyProjection } from "../../common/SkyProjection.js";
+import { HORIZON_FRAME_MATRIX, SkyProjection } from "../../common/SkyProjection.js";
 import { attachSkyCameraInteraction } from "../../common/view/attachSkyCameraInteraction.js";
 import { CelestialEquatorOnHorizonNode } from "../../common/view/CelestialEquatorOnHorizonNode.js";
 import { CelestialSphereNode } from "../../common/view/CelestialSphereNode.js";
@@ -110,7 +110,10 @@ type ExplorerScreenViewSelfOptions = {
 
 export type ExplorerScreenViewOptions = ExplorerScreenViewSelfOptions & ScreenViewOptions;
 
-const SPHERE_RADIUS = 118;
+// Sized/placed so each sphere and the readout beneath it clear the bottom panel
+// row (at radius 118, y 205 the readouts sat under the panels).
+const SPHERE_RADIUS = 110;
+const SPHERE_CENTER_Y = 167;
 
 export class ExplorerScreenView extends ScreenView {
   private readonly sky: SkyModel;
@@ -156,7 +159,7 @@ export class ExplorerScreenView extends ScreenView {
 
     // ── Celestial sphere (left) ─────────────────────────────────────────────────
     this.celProjection = new SkyProjection({
-      center: new Vector2(245, 205),
+      center: new Vector2(245, SPHERE_CENTER_Y),
       radius: SPHERE_RADIUS,
       elevation: -0.35,
     });
@@ -225,10 +228,11 @@ export class ExplorerScreenView extends ScreenView {
 
     // ── Horizon diagram (right) ─────────────────────────────────────────────────
     this.horProjection = new SkyProjection({
-      center: new Vector2(615, 205),
+      center: new Vector2(615, SPHERE_CENTER_Y),
       radius: SPHERE_RADIUS,
       elevation: -0.5,
       azimuth: Math.PI / 2,
+      frameMatrix: HORIZON_FRAME_MATRIX,
     });
 
     const trailsVisibleProperty = new DerivedProperty(
@@ -458,7 +462,8 @@ export class ExplorerScreenView extends ScreenView {
     ) =>
       new Checkbox(
         property,
-        new Text(labelProperty, { font: new PhetFont(CONTROL_FONT_SIZE), fill: textFill, maxWidth: 175 }),
+        // Wrapped, not maxWidth-scaled: the longest label shrank to ~6 px text.
+        new RichText(labelProperty, { font: new PhetFont(CONTROL_FONT_SIZE), fill: textFill, lineWrap: 175 }),
         {
           ...ROTATING_SKY_CHECKBOX_OPTIONS,
           accessibleName: labelProperty,

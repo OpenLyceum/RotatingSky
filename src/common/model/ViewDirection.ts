@@ -34,17 +34,18 @@ export const viewDirectionAzimuthDeg = (direction: ViewDirection): number => {
 /**
  * Camera azimuth (radians) that puts `direction` toward the viewer on the
  * orthographic horizon dome ({@link SkyProjection}). Derived from the horizon
- * frame (+X north, +Y east) and the projector's toward-viewer = +Y′ convention.
+ * frame (+X north, +Y east), the HORIZON_FRAME_MATRIX reflection that makes it
+ * right-handed on screen (hence east ↔ west), and the toward-viewer = +Y′ convention.
  */
 export const viewDirectionDomeAzimuth = (direction: ViewDirection): number => {
   if (direction === ViewDirection.NORTH) {
     return Math.PI / 2;
   }
   if (direction === ViewDirection.EAST) {
-    return 0;
+    return Math.PI;
   }
   if (direction === ViewDirection.SOUTH) {
     return -Math.PI / 2;
   }
-  return Math.PI;
+  return 0;
 };

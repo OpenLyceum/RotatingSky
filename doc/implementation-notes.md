@@ -60,6 +60,10 @@ Duration limit (Explorer): tracks elapsed sidereal hours since play start; auto-
 ## View ↔ model wiring highlights
 
 - **`SkyProjection`**: camera azimuth/elevation + optional `frameMatrixProperty` (Celestial Sphere morph).
+  The horizon frame (+X north, +Y east, +Z zenith) is **left-handed**, and the camera is a pure rotation,
+  so every projection that draws horizon-frame vectors (Horizon System dome, Explorer horizon view) must
+  pass `frameMatrix: HORIZON_FRAME_MATRIX` (negates Y). Without it the dome is a mirror image (north on
+  the wrong side of an observer facing east). `tests/HorizonHandedness.test.ts` guards this.
 - **`SkyStarsNode`**: caller supplies `starToPoint` + optional `pointToEquatorial` (enables drag).
 - **`SkyTrailsNode`**: samples LST from `trailStartTime`; Explorer passes longitude-adjusted local LST.
 - **`DeclinationRegionsNode`**: `projectDeclinationBand` with frame-specific `toVector` — used on Horizon +
