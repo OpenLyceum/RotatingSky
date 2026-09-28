@@ -41,32 +41,34 @@ onReadyToLaunch(() => {
   // Simulation-specific preferences; initial values come from rotatingSkyQueryParameters.
   const simPreferences = new RotatingSkyPreferencesModel(Tandem.ROOT.createTandem("preferences"));
 
-  // Screen name Properties update automatically when the locale changes.
   // Each screen seeds its own SkyModel from the shared preference defaults.
   const screens = [
     new HorizonSystemScreen({
+      preferences: simPreferences,
+      // The screen name Property updates automatically when the locale changes
       name: screenNames.horizonSystemStringProperty,
       tandem: Tandem.ROOT.createTandem("horizonSystemScreen"),
       backgroundColorProperty: RotatingSkyColors.backgroundColorProperty,
       homeScreenIcon: createHorizonSystemIcon(),
       navigationBarIcon: createHorizonSystemIcon(),
-      preferences: simPreferences,
     }),
     new CelestialSphereScreen({
+      preferences: simPreferences,
+      // The screen name Property updates automatically when the locale changes
       name: screenNames.celestialSphereStringProperty,
       tandem: Tandem.ROOT.createTandem("celestialSphereScreen"),
       backgroundColorProperty: RotatingSkyColors.backgroundColorProperty,
       homeScreenIcon: createCelestialSphereIcon(),
       navigationBarIcon: createCelestialSphereIcon(),
-      preferences: simPreferences,
     }),
     new ExplorerScreen({
+      preferences: simPreferences,
+      // The screen name Property updates automatically when the locale changes
       name: screenNames.explorerStringProperty,
       tandem: Tandem.ROOT.createTandem("explorerScreen"),
       backgroundColorProperty: RotatingSkyColors.backgroundColorProperty,
       homeScreenIcon: createExplorerIcon(),
       navigationBarIcon: createExplorerIcon(),
-      preferences: simPreferences,
     }),
   ];
 
