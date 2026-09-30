@@ -87,6 +87,8 @@ export class CoordinateGuideNode extends Node {
     });
     // Dragging the guide star across the sphere updates its RA/Dec directly; the
     // multilink below repositions the dot, so the listener must not translate it.
+    // Pointer-only: arrow keys already nudge RA/Dec through RotatingSkyHotkeyData.MOVE_GUIDE_STAR,
+    // which is the binding the keyboard help renders. A KeyboardDragListener would bind those keys twice.
     starDot.addInputListener(
       new DragListener({
         drag: (event) => {

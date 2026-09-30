@@ -7,6 +7,8 @@
   },
   "controls": {
     "latitude": "Latitud",
+    "unknownValue": "—",
+    "fieldLabelPattern": "{{label}}:",
     "addStar": "Agregar estrella",
     "addStarRandomly": "Agregar estrella al azar",
     "resetStarTrails": "Reiniciar trazas",
