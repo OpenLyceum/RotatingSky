@@ -103,7 +103,8 @@
     "northAbbreviation": "N",
     "eastAbbreviation": "E",
     "southAbbreviation": "S",
-    "westAbbreviation": "W"
+    "westAbbreviation": "W",
+    "hourCircleZero": "0ʰ"
   },
   "a11y": {
     "horizonSystem": {

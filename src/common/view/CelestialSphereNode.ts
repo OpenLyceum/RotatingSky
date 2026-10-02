@@ -86,7 +86,10 @@ export class CelestialSphereNode extends Node {
     // The 0ʰ hour circle is grouped so a single visibility toggle hides it all.
     const hourCircleFront = solid(RotatingSkyColors.accentColorProperty, 1.5);
     const hourCircleBack = dashed(RotatingSkyColors.accentColorProperty, 1.5);
-    const hourCircleLabel = new Text("0ʰ", { font: new PhetFont(12), fill: RotatingSkyColors.accentColorProperty });
+    const hourCircleLabel = new Text(StringManager.getInstance().getControls().hourCircleZeroStringProperty, {
+      font: new PhetFont(12),
+      fill: RotatingSkyColors.accentColorProperty,
+    });
     const hourCircleBackLayer = new Node({ children: [hourCircleBack] });
     const hourCircleFrontLayer = new Node({ children: [hourCircleFront, hourCircleLabel] });
 

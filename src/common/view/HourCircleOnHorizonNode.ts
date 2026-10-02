@@ -10,6 +10,7 @@ import { Multilink, type TReadOnlyProperty } from "scenerystack/axon";
 import type { Vector3 } from "scenerystack/dot";
 import { Node, Path, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 import RotatingSkyColors from "../../RotatingSkyColors.js";
 import { equatorialToHorizonVector } from "../SkyCoordinates.js";
 import type { SkyProjection } from "../SkyProjection.js";
@@ -42,7 +43,10 @@ export class HourCircleOnHorizonNode extends Node {
       opacity: 0.6,
     });
     const front = new Path(null, { stroke: RotatingSkyColors.accentColorProperty, lineWidth: 1.5 });
-    const label = new Text("0ʰ", { font: new PhetFont(12), fill: RotatingSkyColors.accentColorProperty });
+    const label = new Text(StringManager.getInstance().getControls().hourCircleZeroStringProperty, {
+      font: new PhetFont(12),
+      fill: RotatingSkyColors.accentColorProperty,
+    });
     this.children = [back, front, label];
 
     Multilink.multilink(
