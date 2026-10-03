@@ -42,7 +42,7 @@ has zero SceneryStack imports.
 | **Location** | `latitudeProperty`, `longitudeProperty` (longitude used in Explorer views, not in `SkyCoordinates` itself) |
 | **Stars** | `stars` ObservableArray; `selectedStarProperty`; `addStar` / `addRandomStar` / `addPattern`; cap `MAX_STARS = 30`; `removeStar` disposes `Star` |
 | **Patterns** | `starPatternGroups` — stars + edges from inline `StarPatterns.ts` data (7 asterisms) |
-| **Trails** | `trailStartTimeProperty`, `resetStarTrails()`; visibility via `starTrailsVisibleProperty` or `starTrailModeProperty` |
+| **Trails** | `trailStartTimeProperty`, unwrapped `trailElapsedHoursProperty`, `resetStarTrails()`; visibility via `starTrailsVisibleProperty` or `starTrailModeProperty`; rewinding shortens trails |
 | **Toggles** | ~20 BooleanProperties partitioned by screen in source |
 
 Speed: `(SLOW|NORMAL|FAST multiplier) × animationRateProperty × SIDEREAL_HOURS_PER_SECOND × dt`.

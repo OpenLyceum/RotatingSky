@@ -97,6 +97,32 @@ describe("SkyModel time", () => {
     model.advanceSiderealTime(5);
     model.resetStarTrails();
     expect(model.trailStartTimeProperty.value).toBeCloseTo(5);
+    expect(model.trailElapsedHoursProperty.value).toBe(0);
+  });
+
+  it("retains unwrapped trail history across complete and multiple rotations", () => {
+    const model = makeModel();
+    model.advanceSiderealTime(24);
+    expect(model.siderealTimeProperty.value).toBe(0);
+    expect(model.trailElapsedHoursProperty.value).toBe(24);
+    model.advanceSiderealTime(49);
+    expect(model.siderealTimeProperty.value).toBe(1);
+    expect(model.trailElapsedHoursProperty.value).toBe(73);
+    model.resetStarTrails();
+    model.advanceSiderealTime(24);
+    expect(model.trailElapsedHoursProperty.value).toBe(24);
+    model.reset();
+    expect(model.trailElapsedHoursProperty.value).toBe(0);
+  });
+
+  it("shortens trail history when rewinding, without creating a nearly full-day trail", () => {
+    const model = makeModel();
+    model.advanceSiderealTime(3);
+    model.advanceSiderealTime(-1);
+    expect(model.trailElapsedHoursProperty.value).toBe(2);
+    model.resetStarTrails();
+    model.advanceSiderealTime(-1);
+    expect(model.trailElapsedHoursProperty.value).toBe(0);
   });
 
   it("auto-pauses after the selected animation duration elapses", () => {

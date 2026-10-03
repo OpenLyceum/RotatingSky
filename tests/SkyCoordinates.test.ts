@@ -9,11 +9,13 @@
 
 import { describe, expect, it } from "vitest";
 import {
+  altAzToVector3,
   altitudeAtHourAngle,
   declinationBand,
   equatorialToHorizontal,
   equatorialToHorizonVector,
   horizontalToEquatorial,
+  raDecToVector3,
 } from "../src/common/SkyCoordinates.js";
 
 describe("equatorialToHorizontal", () => {
@@ -83,6 +85,28 @@ describe("equatorialToHorizonVector", () => {
 });
 
 describe("horizontalToEquatorial", () => {
+  it.each([-90, -89.999999, 89.999999, 90])("round-trips at latitude %s without polar divisions", (latitude) => {
+    for (const ra of [0, 2, 6, 17.9]) {
+      for (const dec of [-90, -30, 0, 30, 90]) {
+        const horizontal = equatorialToHorizontal(ra, dec, latitude, 0);
+        const vector = altAzToVector3(horizontal.altDeg, horizontal.azDeg);
+        expect(vector.distance(equatorialToHorizonVector(ra, dec, latitude, 0))).toBeLessThan(1e-12);
+        const back = horizontalToEquatorial(horizontal.altDeg, horizontal.azDeg, latitude, 0);
+        // RA is undefined at the celestial poles; compare sky directions instead.
+        expect(raDecToVector3(back.raHours, back.decDeg).distance(raDecToVector3(ra, dec))).toBeLessThan(1e-12);
+      }
+    }
+  });
+
+  it("preserves RA and azimuth in the reported north-pole case", () => {
+    const horizontal = equatorialToHorizontal(2, 30, 90, 0);
+    expect(horizontal.azDeg).toBeCloseTo(150, 10);
+    expect(horizontal.altDeg).toBeCloseTo(30, 10);
+    const back = horizontalToEquatorial(horizontal.altDeg, horizontal.azDeg, 90, 0);
+    expect(back.raHours).toBeCloseTo(2, 10);
+    expect(back.decDeg).toBeCloseTo(30, 10);
+  });
+
   it("inverts equatorialToHorizontal (round-trip)", () => {
     const ra = 8;
     const dec = 23;

@@ -37,6 +37,7 @@ const parseNumber = (text: string): number | null => {
 export class EditableNumberFieldNode extends HBox {
   private editing = false;
   private editBuffer = "";
+  private displayBuffer = "";
   private fieldActive = true;
   private readonly decimalPlaces: number;
   private readonly onCommit: (value: number) => void;
@@ -69,6 +70,11 @@ export class EditableNumberFieldNode extends HBox {
     });
     const fieldNode = new Node({
       children: [fieldBackground, valueText],
+      tagName: "div",
+      ariaRole: "textbox",
+      accessibleNameBehavior: (_node, pdomOptions, accessibleName) => ({ ...pdomOptions, ariaLabel: accessibleName }),
+      accessibleName: labelProperty,
+      innerContent: valueStringProperty,
       focusable: true,
       cursor: "text",
     });
@@ -100,15 +106,17 @@ export class EditableNumberFieldNode extends HBox {
         }
       },
       keydown: (event) => this.handleKeyDown(event),
+      blur: () => this.cancelEditing(),
     });
   }
 
-  /** Updates the displayed value when the model changes. Ignored while the user is editing. */
+  /** Keeps the current model value available while preserving an in-progress edit. */
   public setDisplayValue(value: number | null): void {
+    this.displayBuffer = value === null ? "" : toFixed(value, this.decimalPlaces);
     if (this.editing) {
       return;
     }
-    this.editBuffer = value === null ? "" : toFixed(value, this.decimalPlaces);
+    this.editBuffer = this.displayBuffer;
     this.updateValueText();
   }
 
@@ -118,9 +126,12 @@ export class EditableNumberFieldNode extends HBox {
       ? RotatingSkyColors.controlSurfaceColorProperty
       : RotatingSkyColors.controlSurfaceDisabledColorProperty;
     this.fieldNode.cursor = enabled ? "text" : "default";
+    this.fieldNode.inputEnabled = enabled;
+    this.fieldNode.focusable = enabled;
     if (!enabled) {
       this.editing = false;
       this.editBuffer = "";
+      this.displayBuffer = "";
       this.showUnknownValue();
     }
   }
@@ -147,8 +158,14 @@ export class EditableNumberFieldNode extends HBox {
     if (parsed !== null) {
       this.onCommit(parsed);
     } else {
-      this.updateValueText();
+      this.cancelEditing();
     }
+  }
+
+  private cancelEditing(): void {
+    this.editing = false;
+    this.editBuffer = this.displayBuffer;
+    this.updateValueText();
   }
 
   private handleKeyDown(event: SceneryEvent): void {
@@ -172,8 +189,7 @@ export class EditableNumberFieldNode extends HBox {
     }
 
     if (key === "Escape") {
-      this.editing = false;
-      this.updateValueText();
+      this.cancelEditing();
       event.handle();
       return;
     }

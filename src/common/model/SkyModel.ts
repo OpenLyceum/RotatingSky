@@ -119,6 +119,9 @@ export class SkyModel implements TModel {
   /** Sidereal time at which the current trails began (reset collapses trails). */
   public readonly trailStartTimeProperty = new NumberProperty(0);
 
+  /** Unwrapped sidereal hours swept since the last trail reset; rewinding shortens trails. */
+  public readonly trailElapsedHoursProperty = new NumberProperty(0);
+
   // ── Horizon System appearance toggles ───────────────────────────────────────
 
   /** Show the Zenith and Nadir labels on the horizon dome. */
@@ -265,6 +268,7 @@ export class SkyModel implements TModel {
   /** Collapses all trails back to a point at the current sidereal time. */
   public resetStarTrails(): void {
     this.trailStartTimeProperty.value = this.siderealTimeProperty.value;
+    this.trailElapsedHoursProperty.value = 0;
   }
 
   // ── Time ───────────────────────────────────────────────────────────────────
@@ -272,6 +276,7 @@ export class SkyModel implements TModel {
   /** Advances the sidereal time by `siderealHours`, wrapping into [0, 24). */
   public advanceSiderealTime(siderealHours: number): void {
     this.siderealTimeProperty.value = normalizeHours(this.siderealTimeProperty.value + siderealHours);
+    this.trailElapsedHoursProperty.value = Math.max(0, this.trailElapsedHoursProperty.value + siderealHours);
   }
 
   /** Combined multiplier: discrete speed (other screens) × continuous rate (Explorer). */
@@ -330,6 +335,7 @@ export class SkyModel implements TModel {
     this.starTrailsVisibleProperty.reset();
     this.starTrailModeProperty.reset();
     this.trailStartTimeProperty.reset();
+    this.trailElapsedHoursProperty.reset();
     this.zenithNadirLabelsVisibleProperty.reset();
     this.horizonMeridianVisibleProperty.reset();
     this.horizonCelestialReferencesVisibleProperty.reset();

@@ -2,7 +2,7 @@
  * SkyTrailsNode.ts
  *
  * Draws the arc each star has swept since the trails were last reset. For every
- * star it samples the sidereal time from `trailStartTime` to the current time,
+ * star it samples the unwrapped elapsed trail span ending at the current time,
  * converts each sample to a point on the sphere via the caller-supplied
  * `pathPointAt`, and strokes the visible portions. Hidden by the
  * model's `starTrailsVisibleProperty`.
@@ -22,6 +22,7 @@ import RotatingSkyColors from "../../RotatingSkyColors.js";
 import type { SkyModel } from "../model/SkyModel.js";
 import { HOURS_PER_DAY, normalizeHours } from "../SkyCoordinates.js";
 import type { SkyProjection } from "../SkyProjection.js";
+import { observeStarCoordinates } from "./observeStarCoordinates.js";
 
 export type SkyTrailsNodeOptions = {
   /** Position of `star` on this sphere at a given sidereal time, and whether it shows. */
@@ -116,10 +117,9 @@ export class SkyTrailsNode extends Node {
     const redraw = (): void => {
       const shapes: Shape[] = Array.from({ length: NUM_FADE_BANDS }, () => new Shape());
 
-      const start = model.trailStartTimeProperty.value;
       const end = model.siderealTimeProperty.value;
-      // Unwrap the swept range; cap at one full day, then at the requested length.
-      let span = Math.min(HOURS_PER_DAY, end >= start ? end - start : end + HOURS_PER_DAY - start);
+      // Retain a full revolution even when the displayed sidereal time wraps.
+      let span = Math.min(HOURS_PER_DAY, model.trailElapsedHoursProperty.value);
       if (maxLengthProperty) {
         span = Math.min(span, maxLengthProperty.value);
       }
@@ -139,19 +139,21 @@ export class SkyTrailsNode extends Node {
       }
     };
 
-    model.stars.addItemAddedListener(redraw);
-    model.stars.addItemRemovedListener(redraw);
-    Multilink.multilinkAny(
+    this.disposeEmitter.addListener(observeStarCoordinates(model.stars, redraw));
+    const redrawLink = Multilink.multilinkAny(
       [
-        model.trailStartTimeProperty,
+        model.trailElapsedHoursProperty,
         visibleProperty,
         ...(maxLengthProperty ? [maxLengthProperty] : []),
         ...options.redrawProperties,
       ],
       redraw,
     );
-    visibleProperty.link((visible) => {
+    this.disposeEmitter.addListener(() => redrawLink.dispose());
+    const visibilityListener = (visible: boolean): void => {
       this.visible = visible;
-    });
+    };
+    visibleProperty.link(visibilityListener);
+    this.disposeEmitter.addListener(() => visibleProperty.unlink(visibilityListener));
   }
 }

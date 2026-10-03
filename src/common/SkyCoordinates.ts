@@ -76,20 +76,12 @@ export const equatorialToHorizontal = (
   latitudeDeg: number,
   lstHours: number,
 ): HorizontalCoordinates => {
-  const dec = degToRad(decDeg);
-  const lat = degToRad(latitudeDeg);
-  const ha = hoursToRadians(hourAngle(raHours, lstHours));
-
-  const sinAlt = Math.sin(lat) * Math.sin(dec) + Math.cos(lat) * Math.cos(dec) * Math.cos(ha);
-  const alt = Math.asin(Math.max(-1, Math.min(1, sinAlt)));
-  const cosAlt = Math.cos(alt);
-
-  // Azimuth from North through East. atan2 keeps the correct quadrant.
-  const sinAz = (-Math.cos(dec) * Math.sin(ha)) / cosAlt;
-  const cosAz = (Math.sin(dec) - Math.sin(lat) * sinAlt) / (Math.cos(lat) * cosAlt);
-  const az = normalizeDegrees(radToDeg(Math.atan2(sinAz, cosAz)));
-
-  return { altDeg: radToDeg(alt), azDeg: az };
+  const { x: north, y: east, z: up } = equatorialToHorizonVector(raHours, decDeg, latitudeDeg, lstHours);
+  // Use components directly: dividing by cos(latitude) loses accuracy at the poles.
+  return {
+    altDeg: radToDeg(Math.atan2(up, Math.hypot(north, east))),
+    azDeg: normalizeDegrees(radToDeg(Math.atan2(east, north))),
+  };
 };
 
 /**
@@ -124,19 +116,18 @@ export const horizontalToEquatorial = (
   latitudeDeg: number,
   lstHours: number,
 ): EquatorialCoordinates => {
-  const alt = degToRad(altDeg);
-  const az = degToRad(azDeg);
+  const { x: north, y: east, z: up } = altAzToVector3(altDeg, azDeg);
   const lat = degToRad(latitudeDeg);
+  // Invert the horizon-frame rotation without dividing by cos(latitude) or cos(dec).
+  const sinDec = north * Math.cos(lat) + up * Math.sin(lat);
+  const cosDecCosHa = up * Math.cos(lat) - north * Math.sin(lat);
+  const cosDecSinHa = -east;
+  const haHours = radiansToHours(Math.atan2(cosDecSinHa, cosDecCosHa));
 
-  const sinDec = Math.sin(lat) * Math.sin(alt) + Math.cos(lat) * Math.cos(alt) * Math.cos(az);
-  const dec = Math.asin(Math.max(-1, Math.min(1, sinDec)));
-  const cosDec = Math.cos(dec);
-
-  const sinHa = (-Math.cos(alt) * Math.sin(az)) / cosDec;
-  const cosHa = (Math.sin(alt) - Math.sin(lat) * sinDec) / (Math.cos(lat) * cosDec);
-  const haHours = radiansToHours(Math.atan2(sinHa, cosHa));
-
-  return { raHours: normalizeHours(lstHours - haHours), decDeg: radToDeg(dec) };
+  return {
+    raHours: normalizeHours(lstHours - haHours),
+    decDeg: radToDeg(Math.atan2(sinDec, Math.hypot(cosDecCosHa, cosDecSinHa))),
+  };
 };
 
 /** Altitude (degrees) of a star at the given hour angle — used for culmination. */

@@ -29,6 +29,7 @@ import {
   normalizeDegrees,
   normalizeHours,
 } from "../SkyCoordinates.js";
+import { observeStarCoordinates } from "./observeStarCoordinates.js";
 import { SkyStarsNode } from "./SkyStarsNode.js";
 import { createStarShape } from "./starGraphics.js";
 
@@ -190,7 +191,7 @@ export class FirstPersonSkyViewNode extends Node {
         model.latitudeProperty,
         model.siderealTimeProperty,
         model.starTrailsVisibleProperty,
-        model.trailStartTimeProperty,
+        model.trailElapsedHoursProperty,
         model.horizonCelestialReferencesVisibleProperty,
         options.viewDirectionProperty,
         options.directionLabelProperty,
@@ -198,8 +199,7 @@ export class FirstPersonSkyViewNode extends Node {
       ],
       redraw,
     );
-    model.stars.addItemAddedListener(redraw);
-    model.stars.addItemRemovedListener(redraw);
+    this.disposeEmitter.addListener(observeStarCoordinates(model.stars, redraw));
 
     redraw();
   }
@@ -406,9 +406,8 @@ export class FirstPersonSkyViewNode extends Node {
     }
 
     const shapes: Shape[] = Array.from({ length: NUM_FADE_BANDS }, () => new Shape());
-    const start = this.model.trailStartTimeProperty.value;
     const end = this.model.siderealTimeProperty.value;
-    const span = Math.min(HOURS_PER_DAY, end >= start ? end - start : end + HOURS_PER_DAY - start);
+    const span = Math.min(HOURS_PER_DAY, this.model.trailElapsedHoursProperty.value);
     if (span >= 1e-9) {
       const trailStart = end - span;
       const lat = this.model.latitudeProperty.value;
