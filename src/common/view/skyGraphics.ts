@@ -29,6 +29,7 @@ const orthonormalBasis = (axis: Vector3): [Vector3, Vector3] => {
  * vectors). The arc lies in the plane spanned by p1, p2 and the origin; its normal
  * is p1 × p2. `samples` controls how many segments the arc is split into. Ports the
  * NAAP `setArcPoints` great-circle-between-two-points behaviour.
+ * @internal Exported for unit tests; not part of the application API.
  */
 export const greatCircleArcPoints = (p1: Vector3, p2: Vector3, samples = 32): Vector3[] => {
   const dot = Math.max(-1, Math.min(1, p1.dot(p2)));
