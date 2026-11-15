@@ -13,7 +13,7 @@ import type { SkyModel } from "../model/SkyModel.js";
 import { equatorialToHorizontal, horizontalToEquatorial, normalizeDegrees, normalizeHours } from "../SkyCoordinates.js";
 import { EditableNumberFieldNode } from "./EditableNumberFieldNode.js";
 
-export type SkyReadoutFrame = "equatorial" | "horizontal";
+type SkyReadoutFrame = "equatorial" | "horizontal";
 
 export type SkyReadoutNodeOptions = {
   /** Which coordinate frame to display. */

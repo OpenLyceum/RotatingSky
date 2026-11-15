@@ -60,7 +60,7 @@ export const NUMBER_CONTROL_SLIDER_TRACK_SIZE = new Dimension2(140, 3);
 export const SLIDER_THUMB_SIZE = new Dimension2(13, 26);
 
 /** Default screen-space radius of a projected sky sphere / dome. */
-export const SPHERE_RADIUS = 170;
+const SPHERE_RADIUS = 170;
 
 /**
  * Max side length (px) of the first-person sky-view FOV panel. Kept near the

@@ -13,7 +13,7 @@ import { degToRad } from "../SkyCoordinates.js";
 import type { ProjectedPoint, SkyProjection } from "../SkyProjection.js";
 
 /** Number of samples used to approximate a full circle. */
-export const CIRCLE_SAMPLES = 96;
+const CIRCLE_SAMPLES = 96;
 
 /** Returns two unit vectors spanning the plane perpendicular to `axis`. */
 const orthonormalBasis = (axis: Vector3): [Vector3, Vector3] => {
@@ -74,7 +74,7 @@ export const smallCirclePoints = (axis: Vector3, polarAngleDeg: number, samples 
 export type SplitShapes = { front: Shape; back: Shape };
 
 /** Camera-space depth of a world point (≥ 0 ⇒ front hemisphere). */
-export const worldDepth = (projection: SkyProjection, point: Vector3): number =>
+const worldDepth = (projection: SkyProjection, point: Vector3): number =>
   projection.viewMatrixProperty.value.timesVector3(point).y;
 
 /** World point where the segment crosses the view horizon (depth = 0). */
@@ -180,58 +180,6 @@ export const addFrontHemisphereSphericalPolygon = (
     wasBack = back;
   }
   shape.close();
-};
-
-/**
- * Appends only the near-hemisphere portion of a polyline, clipping each segment
- * at the view horizon so chords never cut across the sphere interior.
- */
-export const addFrontHemispherePolyline = (
-  projection: SkyProjection,
-  points: Vector3[],
-  shape: Shape,
-  mapPoint: (point: Vector3) => Vector2,
-): void => {
-  if (points.length === 0) {
-    return;
-  }
-
-  let penDown = false;
-  const [first, ...rest] = points;
-  if (!first) {
-    return;
-  }
-  let previous = first;
-  let previousDepth = worldDepth(projection, previous);
-
-  for (const point of rest) {
-    const depth = worldDepth(projection, point);
-    const previousFront = previousDepth >= 0;
-    const front = depth >= 0;
-
-    if (previousFront && front) {
-      if (!penDown) {
-        shape.moveToPoint(mapPoint(previous));
-        penDown = true;
-      }
-      shape.lineToPoint(mapPoint(point));
-    } else if (previousFront && !front) {
-      if (!penDown) {
-        shape.moveToPoint(mapPoint(previous));
-      }
-      shape.lineToPoint(mapPoint(clipAtHorizon(previous, point, previousDepth, depth)));
-      penDown = false;
-    } else if (!previousFront && front) {
-      shape.moveToPoint(mapPoint(clipAtHorizon(previous, point, previousDepth, depth)));
-      penDown = true;
-      shape.lineToPoint(mapPoint(point));
-    } else {
-      penDown = false;
-    }
-
-    previous = point;
-    previousDepth = depth;
-  }
 };
 
 /**
@@ -391,12 +339,12 @@ const appendFrontRuns = (
 };
 
 /**
- * Like {@link addFrontHemispherePolyline} but draws each front-hemisphere run as a
- * smooth quadratic-Bézier curve (via {@link smoothRun}) instead of polyline
- * chords. Each segment is still clipped independently at the view horizon before
- * smoothing, so chords never cut across the sphere interior. Sampling the source
- * curve at a fixed angular step and projecting then smoothing yields a faithful,
- * continuous rendering of the projected great/small circle.
+ * Draws each front-hemisphere run as a smooth quadratic-Bézier curve (via
+ * {@link smoothRun}) instead of polyline chords. Each segment is still clipped
+ * independently at the view horizon before smoothing, so chords never cut across
+ * the sphere interior. Sampling the source curve at a fixed angular step and
+ * projecting then smoothing yields a faithful, continuous rendering of the
+ * projected great/small circle.
  *
  * For `closed` curves (the default for small circles such as the equator and
  * latitude parallels) the seam between the last and first sample is handled: a
@@ -481,20 +429,6 @@ export const projectSplitPolyline = (projection: SkyProjection, points: Vector3[
   const front = new Shape();
   const back = new Shape();
   addSplitPolyline(projection, points, closed, front, back);
-  return { front, back };
-};
-
-/** Projects several polylines into a single shared pair of front / back shapes. */
-export const projectSplitPolylines = (
-  projection: SkyProjection,
-  polylines: Vector3[][],
-  closed: boolean,
-): SplitShapes => {
-  const front = new Shape();
-  const back = new Shape();
-  for (const points of polylines) {
-    addSplitPolyline(projection, points, closed, front, back);
-  }
   return { front, back };
 };
 
@@ -627,11 +561,7 @@ export const projectPolylineShape = (projection: SkyProjection, points: Vector3[
 };
 
 /** Projects several polylines into one Shape (no occlusion); `closeEach` closes every subpath. */
-export const projectMultiPolylineShape = (
-  projection: SkyProjection,
-  polylines: Vector3[][],
-  closeEach = false,
-): Shape => {
+const projectMultiPolylineShape = (projection: SkyProjection, polylines: Vector3[][], closeEach = false): Shape => {
   const shape = new Shape();
   for (const points of polylines) {
     points.forEach((p, i) => {

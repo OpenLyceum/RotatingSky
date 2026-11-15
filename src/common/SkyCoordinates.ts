@@ -35,7 +35,7 @@ const HOURS_TO_RAD = (2 * Math.PI) / HOURS_PER_DAY;
 
 export const degToRad = (deg: number): number => deg * DEG_TO_RAD;
 export const radToDeg = (rad: number): number => rad * RAD_TO_DEG;
-export const hoursToRadians = (hours: number): number => hours * HOURS_TO_RAD;
+const hoursToRadians = (hours: number): number => hours * HOURS_TO_RAD;
 export const radiansToHours = (rad: number): number => rad / HOURS_TO_RAD;
 
 /** Wraps an hour value into [0, 24). */
@@ -45,7 +45,7 @@ export const normalizeHours = (hours: number): number => ((hours % HOURS_PER_DAY
 export const normalizeDegrees = (deg: number): number => ((deg % 360) + 360) % 360;
 
 /** Hour angle H = LST − RA, wrapped into [−12, 12) hours. */
-export const hourAngle = (raHours: number, lstHours: number): number => {
+const hourAngle = (raHours: number, lstHours: number): number => {
   const h = normalizeHours(lstHours - raHours);
   return h >= HOURS_PER_DAY / 2 ? h - HOURS_PER_DAY : h;
 };

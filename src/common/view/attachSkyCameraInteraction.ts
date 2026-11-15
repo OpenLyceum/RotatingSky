@@ -19,9 +19,9 @@ import RotatingSkyHotkeyData from "../RotatingSkyHotkeyData.js";
 import type { SkyProjection } from "../SkyProjection.js";
 
 /** Radians of camera rotation per pixel of pointer movement. */
-export const SKY_ROTATE_SPEED = 0.01;
+const SKY_ROTATE_SPEED = 0.01;
 /** Sidereal hours advanced per pixel of Ctrl-drag. */
-export const SKY_TIME_DRAG_RATE = 0.02;
+const SKY_TIME_DRAG_RATE = 0.02;
 
 /** Radians of camera rotation per keyboard arrow press. */
 const KEYBOARD_ROTATE_STEP = 0.1;

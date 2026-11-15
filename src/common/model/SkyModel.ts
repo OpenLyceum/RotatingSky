@@ -40,16 +40,6 @@ import { Star } from "./Star.js";
 import type { StarPatternEdge, StarPatternStar } from "./StarPatterns.js";
 import { StarTrailMode } from "./StarTrailMode.js";
 
-/** Combo-box choices for {@link AnimationDuration}, in display order. */
-export const ANIMATION_DURATION_OPTIONS: readonly AnimationDuration[] = [
-  AnimationDuration.CONTINUOUS,
-  AnimationDuration.ONE_HOUR,
-  AnimationDuration.THREE_HOURS,
-  AnimationDuration.SIX_HOURS,
-  AnimationDuration.TWELVE_HOURS,
-  AnimationDuration.TWENTY_FOUR_HOURS,
-];
-
 const ANIMATION_DURATION_HOURS = new Map<AnimationDuration, number | null>([
   [AnimationDuration.CONTINUOUS, null],
   [AnimationDuration.ONE_HOUR, 1],

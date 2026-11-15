@@ -37,7 +37,7 @@ import { createStarShape } from "./starGraphics.js";
  * Horizontal / vertical field of view in degrees. Wider than UNL StarTrails'
  * 50° so the panel shows a useful swath of sky rather than a tight zoom.
  */
-export const SKY_VIEW_FOV_DEG = 100;
+const SKY_VIEW_FOV_DEG = 100;
 
 /** Fraction of panel height below the horizon line (ground). */
 const GROUND_FRACTION = 0.15;

@@ -11,9 +11,7 @@ import type { EarthMapResolution } from "../../RotatingSkyConstants.js";
 import { EARTH_SHORE_POLYGONS_HIGH } from "./EarthShoreDataHigh.js";
 import { EARTH_SHORE_POLYGONS_LOW, type EarthShorePoint } from "./EarthShoreDataLow.js";
 
-export { EARTH_SHORE_POLYGONS_HIGH } from "./EarthShoreDataHigh.js";
 export type { EarthShorePoint } from "./EarthShoreDataLow.js";
-export { EARTH_SHORE_POLYGONS_LOW } from "./EarthShoreDataLow.js";
 
 export const getEarthShorePolygons = (resolution: EarthMapResolution): readonly (readonly EarthShorePoint[])[] =>
   resolution === "low" ? EARTH_SHORE_POLYGONS_LOW : EARTH_SHORE_POLYGONS_HIGH;
