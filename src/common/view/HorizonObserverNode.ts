@@ -18,7 +18,7 @@ const ORIGIN = Vector3.ZERO;
 const FIGURE_SCALE = 0.042;
 
 /** Stick-figure segments in the horizon frame (+X north, +Y east, +Z zenith). */
-const figureSegments = (): Array<[Vector3, Vector3]> => {
+const figureSegments = (): [Vector3, Vector3][] => {
   const s = FIGURE_SCALE;
   const hip = new Vector3(0, 0, s * 1.1);
   const shoulder = new Vector3(0, 0, s * 2.0);
