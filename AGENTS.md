@@ -51,7 +51,6 @@ Each screen registers `*ScreenSummaryContent` and `*KeyboardHelpContent`, with e
 
 ## Compliance carve-outs
 
-- `.github/workflows/ci.yml`: `unused-mode: advisory` until both Knip default and production baselines are reviewed and cleared ([Baton/doc/knip.md](https://github.com/OpenLyceum/Baton/blob/main/doc/knip.md)).
 - `data/`: Natural Earth land GeoJSON (public domain) read by `npm run earth-shore` (`scripts/generate-earth-shore-data.ts`) to regenerate `EarthShoreData.ts`.
 
 ## Testing
