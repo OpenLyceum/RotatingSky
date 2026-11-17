@@ -4,6 +4,7 @@
  * (tests/helpers/memoryLeak.ts). Add sim-specific leak tests below using forceGC().
  */
 
+import { Star } from "../src/common/model/Star.js";
 import { SkyProjection } from "../src/common/SkyProjection.js";
 import { TimeModel } from "../src/common/TimeModel.js";
 import { describeDisposalLeaks } from "./helpers/memoryLeak.js";
@@ -11,4 +12,5 @@ import { describeDisposalLeaks } from "./helpers/memoryLeak.js";
 describeDisposalLeaks([
   { name: "SkyProjection", create: () => new SkyProjection() },
   { name: "TimeModel", create: () => new TimeModel(), idempotentDispose: true },
+  { name: "Star", create: () => new Star(0, 45) },
 ]);
