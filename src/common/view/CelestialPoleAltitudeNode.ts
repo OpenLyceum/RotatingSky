@@ -9,7 +9,7 @@
  */
 
 import { DerivedProperty, Multilink, type TReadOnlyProperty } from "scenerystack/axon";
-import { Vector3 } from "scenerystack/dot";
+import { roundSymmetric, Vector3 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
 import { Node, Path, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
@@ -41,7 +41,7 @@ export class CelestialPoleAltitudeNode extends Node {
 
     const angleStringProperty = new DerivedProperty(
       [latitudeProperty],
-      (latitude) => `${Math.round(Math.abs(latitude))}°`,
+      (latitude) => `${roundSymmetric(Math.abs(latitude))}°`,
     );
     angleStringProperty.link((string) => {
       label.string = string;

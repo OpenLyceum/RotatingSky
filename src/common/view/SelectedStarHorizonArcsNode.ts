@@ -8,7 +8,7 @@
  */
 
 import { Multilink, type TReadOnlyProperty, type UnknownMultilink } from "scenerystack/axon";
-import { toFixed, type Vector3 } from "scenerystack/dot";
+import { roundSymmetric, toFixed, type Vector3 } from "scenerystack/dot";
 import { Node, Path, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
 import RotatingSkyColors from "../../RotatingSkyColors.js";
@@ -136,7 +136,7 @@ export class SelectedStarHorizonArcsNode extends Node {
       altitudeFront.shape = altitudeSplit.front;
       altitudeBack.shape = altitudeSplit.back;
 
-      azimuthLabel.string = `${Math.round(azDeg)}°`;
+      azimuthLabel.string = `${roundSymmetric(azDeg)}°`;
       altitudeLabel.string = altDeg >= 0 ? `+${toFixed(altDeg, 1)}°` : `${toFixed(altDeg, 1)}°`;
 
       placeLabelOutside(azimuthLabel, altAzToVector3(0, azDeg / 2), projection);
