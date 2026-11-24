@@ -7,7 +7,7 @@
  * (far-side) part dashed.
  */
 
-import { Vector2, Vector3 } from "scenerystack/dot";
+import { roundSymmetric, Vector2, Vector3 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
 import { degToRad } from "../SkyCoordinates.js";
 import type { ProjectedPoint, SkyProjection } from "../SkyProjection.js";
@@ -596,7 +596,7 @@ export const projectDeclinationBand = (
   raSteps = 48,
 ): Shape => {
   const shape = new Shape();
-  const decSteps = Math.max(1, Math.round((decHigh - decLow) / 15));
+  const decSteps = Math.max(1, roundSymmetric((decHigh - decLow) / 15));
   for (let i = 0; i < raSteps; i++) {
     const ra0 = (i / raSteps) * 24;
     const ra1 = ((i + 1) / raSteps) * 24;

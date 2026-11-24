@@ -148,7 +148,7 @@ export class CelestialSphereScreenView extends ScreenView {
       morphAnimation.start();
     };
 
-    const switchButtonLabel = new DerivedProperty(
+    const switchButtonLabelProperty = new DerivedProperty(
       [
         model.systemBlendProperty,
         model.isMorphingProperty,
@@ -165,7 +165,7 @@ export class CelestialSphereScreenView extends ScreenView {
     );
     const switchButton = new RectangularPushButton({
       ...FLAT_RECTANGULAR_BUTTON_OPTIONS,
-      content: new Text(switchButtonLabel, {
+      content: new Text(switchButtonLabelProperty, {
         font: new PhetFont(CONTROL_FONT_SIZE),
         fill: LIGHT_SURFACE_TEXT_FILL,
         maxWidth: 180,
@@ -176,7 +176,7 @@ export class CelestialSphereScreenView extends ScreenView {
         }
         morphTo(model.systemBlendProperty.value < 0.5 ? 1 : 0);
       },
-      accessibleName: switchButtonLabel,
+      accessibleName: switchButtonLabelProperty,
       enabledProperty: new DerivedProperty([model.isMorphingProperty], (isMorphing) => !isMorphing),
     });
 
@@ -344,8 +344,8 @@ export class CelestialSphereScreenView extends ScreenView {
 
     const coordinateText = (valueProperty: TReadOnlyProperty<string>): Text =>
       new Text(valueProperty, { font: new PhetFont(CONTROL_FONT_SIZE), fill: textFill });
-    const raValue = new DerivedProperty([model.guideRaProperty], (ra) => `${toFixed(ra, 1)} h`);
-    const decValue = new DerivedProperty(
+    const raValueProperty = new DerivedProperty([model.guideRaProperty], (ra) => `${toFixed(ra, 1)} h`);
+    const decValueProperty = new DerivedProperty(
       [model.guideDecProperty],
       (dec) => `${dec >= 0 ? "+" : ""}${toFixed(dec, 0)}°`,
     );
@@ -357,7 +357,7 @@ export class CelestialSphereScreenView extends ScreenView {
           spacing: 6,
           children: [
             new Text(controls.rightAscensionStringProperty, { font: new PhetFont(CONTROL_FONT_SIZE), fill: textFill }),
-            coordinateText(raValue),
+            coordinateText(raValueProperty),
           ],
         }),
         raSlider,
@@ -371,7 +371,7 @@ export class CelestialSphereScreenView extends ScreenView {
           spacing: 6,
           children: [
             new Text(controls.declinationStringProperty, { font: new PhetFont(CONTROL_FONT_SIZE), fill: textFill }),
-            coordinateText(decValue),
+            coordinateText(decValueProperty),
           ],
         }),
         decSlider,
