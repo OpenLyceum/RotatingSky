@@ -38,6 +38,9 @@ Thumbs.db
 # Claude Code - local settings excluded, hooks tracked
 .claude/settings.local.json
 
+# CI / local npm audit artifact (must not be linted)
+audit.json
+
 # AI session transcripts (accidental commits)
 session-*.md
 
@@ -47,6 +50,3 @@ NAAP/decompiled/
 # Flash decompilation tooling (npm run decompile) — downloaded FFDec
 tools/ffdec/
 .pw-shots/
-
-# CI / local npm audit artifact (must not be linted)
-audit.json
